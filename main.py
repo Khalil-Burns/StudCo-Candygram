@@ -7,7 +7,7 @@ candygrams = pd.read_csv('Studco Candygrams Form 2024 (Responses) - Form Respons
 candygrams["Homeroom.filter"] = candygrams["Homeroom teacher of receiver (Block A)"].str.upper()
 
 def filter(text):
-    text = re.sub(r'\b(MR|MR\.|MS\.|MS|MRS\.|MRS)\b', '', text)
+    text = re.sub(r'\b(MRS\.|MR\.|MRS|MS\.|MR|MS)\b', '', text)
     words = text.split()
     
     if len(words) > 1:
@@ -25,8 +25,10 @@ candygrams.sort_values(by="Homeroom.filter", inplace=True)
 # del candygrams["Homeroom.filter"]
 candygrams = candygrams.fillna('')
 
-output = open("Studco_Candygrams_Messages_2024.txt","w")
+output = open("1-Studco_Candygrams_Messages_2024.txt","w")
 
+numPrinted = 0
+candygramsLen = len(candygrams)
 for index, candygram in candygrams.iterrows():
     if (index < 10):
         output.write(f"Order ID: 000{index}\n")
@@ -52,6 +54,13 @@ for index, candygram in candygrams.iterrows():
         output.write(f"  -  {candygram['YOUR Full name (ex. John Doe)']}\n")
 
     output.write('-----------------------------------------------\n\n\n\n\n')
+
+    if (numPrinted == int(candygramsLen/2) + 1):
+        output.close()
+        output = open("2-Studco_Candygrams_Messages_2024.txt","w")
+
+    numPrinted = numPrinted + 1
+
 
 
 output.close()
